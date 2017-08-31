@@ -5,7 +5,7 @@ Call the twilio rest api in go.
 ## Example
 ```
 func sendTwilioMessage() {
-	t := vtwilio.NewVTwilio(sid, token, twilioNumber)
+	t := vtwilio.NewVTwilio(accountSID, authToken, twilioNumber)
 	resp, err := t.SendMessage("Hello world", "12345678910")
 	if err != nil {
 		panic(err)
