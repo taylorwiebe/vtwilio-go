@@ -73,7 +73,7 @@ func (v *VTwilio) SendMessage(message string, to string) (*Message, error) {
 	}
 
 	if to == "" {
-		return nil, fmt.Errorf("Must contain a phone number to send the message to")
+		return nil, fmt.Errorf("must contain a phone number to send the message to")
 	}
 
 	return v.sendMessage(message, to)
@@ -118,4 +118,9 @@ func (v *VTwilio) sendMessage(message, to string) (*Message, error) {
 		return nil, err
 	}
 	return &data, nil
+}
+
+// GetMessages returns a list if the messages you have sent
+func (v *VTwilio) GetMessages(pageSize int, page int) (*Response, error) {
+	return nil, fmt.Errorf("not implemented")
 }
