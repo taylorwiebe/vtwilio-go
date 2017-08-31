@@ -18,7 +18,7 @@ type Interface interface {
 
 const (
 	baseAPI    = "https://api.twilio.com/2010-04-01/Accounts/"
-	messageAPI = "/Messages.json"
+	messageAPI = "/Messages"
 )
 
 // VTwilio is a structure holding details about a twilio account
@@ -87,7 +87,7 @@ func (v *VTwilio) sendMessage(message, to string) (*Message, error) {
 	values.Set("Body", message)
 	en := values.Encode()
 
-	urlStr := strings.Join([]string{baseAPI, v.accountSID, messageAPI}, "")
+	urlStr := fmt.Sprintf("%v%v%v.json", baseAPI, v.accountSID, messageAPI)
 	req, err := http.NewRequest("POST", urlStr, strings.NewReader(en))
 	if err != nil {
 		return nil, err
@@ -97,28 +97,7 @@ func (v *VTwilio) sendMessage(message, to string) (*Message, error) {
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode < 200 && resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("Error, with status code: %v", resp.Status)
-	}
-
-	var data Message
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(bodyBytes, &data)
-	if err != nil {
-		return nil, err
-	}
-	return &data, nil
+	return handleMessageRequest(req)
 }
 
 // ListMessages returns a list if the messages you have sent
@@ -128,5 +107,48 @@ func (v *VTwilio) ListMessages(pageSize int, page int) (*List, error) {
 
 // GetMessage gets a message by it's sid
 func (v *VTwilio) GetMessage(messageSID string) (*Message, error) {
-	return nil, fmt.Errorf("not implemented")
+	if messageSID == "" {
+		return nil, fmt.Errorf("must contain a message SID")
+	}
+	return v.getMessage(messageSID)
+}
+
+func (v *VTwilio) getMessage(messageSID string) (*Message, error) {
+	urlStr := fmt.Sprintf("%v%v%v/%v.json", baseAPI, v.accountSID, messageAPI, messageSID)
+	req, err := http.NewRequest("GET", urlStr, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(v.accountSID, v.authToken)
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	return handleMessageRequest(req)
+}
+
+func handleMessageRequest(req *http.Request) (*Message, error) {
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("Error, with status code: %v", resp.Status)
+	}
+
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var data Message
+	err = json.Unmarshal(bodyBytes, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	return &data, nil
 }
