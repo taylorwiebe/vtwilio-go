@@ -12,7 +12,8 @@ import (
 // Interface for VTwilio
 type Interface interface {
 	SendMessage(message string, to string) (*Message, error)
-	GetMessages(pageSize int, page int) (*Response, error)
+	ListMessages(pageSize int, page int) (*List, error)
+	GetMessage(messageSID string) (*Message, error)
 }
 
 const (
@@ -27,8 +28,8 @@ type VTwilio struct {
 	twilioNumber string
 }
 
-// Response is a response from a get
-type Response struct {
+// List is a response from a get
+type List struct {
 	FirstPageURI    string     `json:"first_page_uri"`
 	End             int        `json:"end"`
 	PreviousPageURI string     `json:"previous_page_uri"`
@@ -120,7 +121,12 @@ func (v *VTwilio) sendMessage(message, to string) (*Message, error) {
 	return &data, nil
 }
 
-// GetMessages returns a list if the messages you have sent
-func (v *VTwilio) GetMessages(pageSize int, page int) (*Response, error) {
+// ListMessages returns a list if the messages you have sent
+func (v *VTwilio) ListMessages(pageSize int, page int) (*List, error) {
+	return nil, fmt.Errorf("not implemented")
+}
+
+// GetMessage gets a message by it's sid
+func (v *VTwilio) GetMessage(messageSID string) (*Message, error) {
 	return nil, fmt.Errorf("not implemented")
 }
