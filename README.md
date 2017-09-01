@@ -17,7 +17,7 @@ func sendTwilioMessage() {
 
 ### Get a single message
 ```
-func sendTwilioMessage() {
+func GetATwilioMessage() {
 	t := vtwilio.NewVTwilio(accountSID, authToken, twilioNumber)
 	message, err := t.GetMessage(messageSID)
 	if err != nil {
@@ -29,7 +29,7 @@ func sendTwilioMessage() {
 
 ### Get a list of messages
 ```
-func sendTwilioMessage() {
+func ListTwilioMessages() {
 	t := vtwilio.NewVTwilio(accountSID, authToken, twilioNumber)
 	messages, err := t.ListMessages(vtwilio.PageSize(1), vtwilio.Page(0))
 	if err != nil {
