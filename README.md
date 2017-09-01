@@ -35,7 +35,7 @@ func sendTwilioMessage() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(message)
+	fmt.Println(messages)
 }
 ```
 
