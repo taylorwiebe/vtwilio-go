@@ -29,11 +29,11 @@ func GetATwilioMessage() {
 
 ### Get a list of messages
 #### List options
-- PageSize(int) - current page, defaults to 10
-- Page(int) - size of the page, defaults to 0
-- OnDate(time.Time) - Get messages on a date
-- OnAndBeforeDate(time.Time) - Get message on and before a given date
-- OnAndAfterDate(time.Time) - Get messages on and after given date
+- `PageSize(int)` - current page, defaults to 10
+- `Page(int)` - size of the page, defaults to 0
+- `OnDate(time.Time)` - Get messages on a date
+- `OnAndBeforeDate(time.Time)` - Get message on and before a given date
+- `OnAndAfterDate(time.Time)` - Get messages on and after given date
 ```
 func ListTwilioMessages() {
 	t := vtwilio.NewVTwilio(accountSID, authToken, twilioNumber)
