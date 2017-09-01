@@ -4,11 +4,21 @@ import (
 	"time"
 )
 
+type dateOption int
+
+const (
+	_ dateOption = iota
+	before
+	equal
+	after
+)
+
 type optionConfiguration struct {
-	To       string
-	Date     time.Time
-	PageSize int
-	Page     int
+	To        string
+	Date      time.Time
+	DateRange dateOption
+	PageSize  int
+	Page      int
 }
 
 // Option is a list option
@@ -21,10 +31,27 @@ func To(to string) Option {
 	}
 }
 
-// Date sets the time range
-func Date(date time.Time) Option {
+// OnDate get the messages for a specific ay
+func OnDate(date time.Time) Option {
 	return func(r *optionConfiguration) {
 		r.Date = date
+		r.DateRange = equal
+	}
+}
+
+// OnAndBeforeDate get the messages on and before the specified day
+func OnAndBeforeDate(date time.Time) Option {
+	return func(r *optionConfiguration) {
+		r.Date = date
+		r.DateRange = before
+	}
+}
+
+// OnAndAfterDate get the messages on and after the specified day
+func OnAndAfterDate(date time.Time) Option {
+	return func(r *optionConfiguration) {
+		r.Date = date
+		r.DateRange = after
 	}
 }
 

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 // Interface for VTwilio
@@ -164,6 +165,9 @@ func (v *VTwilio) ListMessages(opts ...Option) (*List, error) {
 
 func (v *VTwilio) listMessages(config *optionConfiguration) (*List, error) {
 	urlStr := fmt.Sprintf("%v%v%v.json?PageSize=%v&Page=%v", baseAPI, v.accountSID, messageAPI, config.PageSize, config.Page)
+	if !config.Date.IsZero() {
+		urlStr = fmt.Sprintf("%v&%v", urlStr, handleDateRange(config.Date, config.DateRange))
+	}
 	req, err := http.NewRequest("GET", urlStr, nil)
 	if err != nil {
 		return nil, err
@@ -200,4 +204,17 @@ func handleListRequest(req *http.Request) (*List, error) {
 	}
 
 	return &data, nil
+}
+
+func handleDateRange(date time.Time, opt dateOption) string {
+	t := date.Format("2006-01-02T15:04:05.999999-07:00")
+	t = strings.Split(t, "T")[0]
+	if opt == before {
+		return fmt.Sprintf("DateSent<=%v", t)
+	} else if opt == after {
+		return fmt.Sprintf("DateSent>=%v", t)
+	} else if opt == equal {
+		return fmt.Sprintf("DateSent=%v", t)
+	}
+	return ""
 }
