@@ -12,7 +12,7 @@ import (
 // Interface for VTwilio
 type Interface interface {
 	SendMessage(message string, to string) (*Message, error)
-	ListMessages(pageSize int, page int) (*List, error)
+	ListMessages(opts ...Option) (*List, error)
 	GetMessage(messageSID string) (*Message, error)
 }
 
@@ -100,11 +100,6 @@ func (v *VTwilio) sendMessage(message, to string) (*Message, error) {
 	return handleMessageRequest(req)
 }
 
-// ListMessages returns a list if the messages you have sent
-func (v *VTwilio) ListMessages(pageSize int, page int) (*List, error) {
-	return nil, fmt.Errorf("not implemented")
-}
-
 // GetMessage gets a message by it's sid
 func (v *VTwilio) GetMessage(messageSID string) (*Message, error) {
 	if messageSID == "" {
@@ -145,6 +140,60 @@ func handleMessageRequest(req *http.Request) (*Message, error) {
 	}
 
 	var data Message
+	err = json.Unmarshal(bodyBytes, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
+// ListMessages returns a list if the messages you have sent
+func (v *VTwilio) ListMessages(opts ...Option) (*List, error) {
+	c := &optionConfiguration{
+		PageSize: 10,
+		Page:     0,
+	}
+
+	for _, o := range opts {
+		o(c)
+	}
+
+	return v.listMessages(c)
+}
+
+func (v *VTwilio) listMessages(config *optionConfiguration) (*List, error) {
+	urlStr := fmt.Sprintf("%v%v%v.json?PageSize=%v&Page=%v", baseAPI, v.accountSID, messageAPI, config.PageSize, config.Page)
+	req, err := http.NewRequest("GET", urlStr, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(v.accountSID, v.authToken)
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	return handleListRequest(req)
+}
+
+func handleListRequest(req *http.Request) (*List, error) {
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("Error, with status code: %v", resp.Status)
+	}
+
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var data List
 	err = json.Unmarshal(bodyBytes, &data)
 	if err != nil {
 		return nil, err
