@@ -1,14 +1,5 @@
 package vtwilio
 
-import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"strings"
-	"time"
-)
-
 // Interface for VTwilio
 type Interface interface {
 	SendMessage(message string, to string) (*Message, error)

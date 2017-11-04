@@ -28,10 +28,6 @@ func (v *VTwilio) listMessages(config *optionConfiguration) (*List, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	req.SetBasicAuth(v.accountSID, v.authToken)
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-
-	return handleListRequest(req)
+	setUpRequest(req, v.accountSID, v.authToken)
+	return handleListMessages(req)
 }
