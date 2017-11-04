@@ -7,44 +7,19 @@ import (
 	"strings"
 )
 
-// Country type
-type Country int
-
-const (
-	// US United States Code
-	US Country = iota
-	// CA Canada code
-	CA
-)
-
-// ToCode converts a country to a country code
-func (c Country) ToCode() (string, error) {
-	switch c {
-	case US:
-		return "/US", nil
-	case CA:
-		return "/CA", nil
-	}
-	return "", fmt.Errorf("invalid country")
-}
-
 // AvailablePhoneNumbers finds an available phone number
-func (v *VTwilio) AvailablePhoneNumbers(country Country, opts ...AvailableOption) (*AvailablePhoneNumbers, error) {
+func (v *VTwilio) AvailablePhoneNumbers(countryCode string, opts ...AvailableOption) (*AvailablePhoneNumbers, error) {
 	config := &availableConfiguration{}
 	for _, o := range opts {
 		o(config)
 	}
 
-	c, err := country.ToCode()
-	if err != nil {
-		return nil, err
-	}
 	val, err := buildValues(config)
 	if err != nil {
 		return nil, err
 	}
 
-	urlStr := fmt.Sprintf("%s%s%s%s%s.json?%s", baseAPI, v.accountSID, availablePhoneNumbersAPI, c, local, val)
+	urlStr := fmt.Sprintf("%s%s%s/%s%s.json?%s", baseAPI, v.accountSID, availablePhoneNumbersAPI, countryCode, local, val)
 	req, err := http.NewRequest("GET", urlStr, nil)
 	if err != nil {
 		return nil, err
