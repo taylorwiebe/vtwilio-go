@@ -5,7 +5,7 @@ type Interface interface {
 	SendMessage(message string, to string) (*Message, error)
 	ListMessages(opts ...ListOption) (*List, error)
 	GetMessage(messageSID string) (*Message, error)
-	AvailablePhoneNumbers(opts ...AvailableOption) (*AvailablePhoneNumbers, error)
+	AvailablePhoneNumbers(countryCode string, opts ...AvailableOption) (*AvailablePhoneNumbers, error)
 }
 
 const (
