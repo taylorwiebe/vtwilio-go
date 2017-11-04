@@ -47,6 +47,7 @@ func ListTwilioMessages() {
 ```
 
 ### Get Available Numbers
+```
 func GetAvailableNumbers() {
 	t := vtwilio.NewVTwilio(sid, token)
 	numbers, err := t.AvailablePhoneNumbers(vtwilio.CA)
@@ -55,6 +56,7 @@ func GetAvailableNumbers() {
 	}
 	fmt.Println(numbers)
 }
+```
 
 ## Change Log
 ### v0.0.2
