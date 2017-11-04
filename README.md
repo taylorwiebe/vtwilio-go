@@ -7,7 +7,7 @@ Call the twilio rest api in go.
 ### Send a message
 ```
 func sendTwilioMessage() {
-	t := vtwilio.NewVTwilio(accountSID, authToken, twilioNumber)
+	t := vtwilio.NewVTwilio(sid, token, vtwilio.TwilioNumber(twilioNumber))
 	message, err := t.SendMessage("Hello world", "12345678910")
 	if err != nil {
 		panic(err)
@@ -19,7 +19,7 @@ func sendTwilioMessage() {
 ### Get a single message
 ```
 func GetATwilioMessage() {
-	t := vtwilio.NewVTwilio(accountSID, authToken, twilioNumber)
+	t := vtwilio.NewVTwilio(sid, token, vtwilio.TwilioNumber(twilioNumber))
 	message, err := t.GetMessage(messageSID)
 	if err != nil {
 		panic(err)
@@ -37,7 +37,7 @@ func GetATwilioMessage() {
 - `OnAndAfterDate(time.Time)` - Get messages on and after given date
 ```
 func ListTwilioMessages() {
-	t := vtwilio.NewVTwilio(accountSID, authToken, twilioNumber)
+	t := vtwilio.NewVTwilio(accountSID, authToken, vtwilio.TwilioNumber(twilioNumber))
 	messages, err := t.ListMessages(vtwilio.PageSize(1), vtwilio.Page(0))
 	if err != nil {
 		panic(err)
@@ -45,6 +45,16 @@ func ListTwilioMessages() {
 	fmt.Println(messages)
 }
 ```
+
+### Get Available Numbers
+func GetAvailableNumbers() {
+	t := vtwilio.NewVTwilio(sid, token)
+	numbers, err := t.AvailablePhoneNumbers(vtwilio.CA)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(numbers)
+}
 
 ## Change Log
 ### v0.0.2
