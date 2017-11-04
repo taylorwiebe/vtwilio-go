@@ -48,14 +48,14 @@ func ListTwilioMessages() {
 
 ### Get Available Numbers
 #### Available Number Options
-`NearNumber`
-`NearLatLong`
-`Distance`
-`InPostalCode`
-`InLocality`
-`InRegion`
-`InRateCenter`
-`InLATA`
+- `NearNumber`
+- `NearLatLong`
+- `Distance`
+- `InPostalCode`
+- `InLocality`
+- `InRegion`
+- `InRateCenter`
+- `InLATA`
 
 ```
 func GetAvailableNumbers() {
