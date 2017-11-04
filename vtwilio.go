@@ -2,7 +2,7 @@ package vtwilio
 
 // Interface for VTwilio
 type Interface interface {
-	SetPhoneNumber(n string)
+	SetPhoneNumber(n string) *VTwilio
 	SendMessage(message string, to string) (*Message, error)
 	ListMessages(opts ...ListOption) (*List, error)
 	GetMessage(messageSID string) (*Message, error)
@@ -100,6 +100,7 @@ func NewVTwilio(accountSID, authToken string, opts ...Option) *VTwilio {
 }
 
 // SetPhoneNumber sets the twilio phone number
-func (v *VTwilio) SetPhoneNumber(n string) {
+func (v *VTwilio) SetPhoneNumber(n string) *VTwilio {
 	v.twilioNumber = n
+	return v
 }
