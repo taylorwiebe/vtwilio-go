@@ -50,7 +50,7 @@ func ListTwilioMessages() {
 ```
 func GetAvailableNumbers() {
 	t := vtwilio.NewVTwilio(sid, token)
-	numbers, err := t.AvailablePhoneNumbers(vtwilio.CA)
+	numbers, err := t.AvailablePhoneNumbers("US", vtwilio.InRegion("CA"))
 	if err != nil {
 		panic(err)
 	}
