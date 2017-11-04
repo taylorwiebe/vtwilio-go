@@ -3,15 +3,16 @@ package vtwilio
 // Interface for VTwilio
 type Interface interface {
 	SendMessage(message string, to string) (*Message, error)
-	ListMessages(opts ...Option) (*List, error)
+	ListMessages(opts ...ListOption) (*List, error)
 	GetMessage(messageSID string) (*Message, error)
 	AvailablePhoneNumbers(opts ...AvailableOption) (*AvailablePhoneNumbers, error)
 }
 
 const (
-	baseAPI                 = "https://api.twilio.com/2010-04-01/Accounts/"
-	messageAPI              = "/Messages"
-	avaliblePhoneNumbersAPI = "/AvailablePhoneNumbers"
+	baseAPI                  = "https://api.twilio.com/2010-04-01/Accounts/"
+	messageAPI               = "/Messages"
+	availablePhoneNumbersAPI = "/AvailablePhoneNumbers"
+	local                    = "/Local"
 )
 
 // VTwilio is a structure holding details about a twilio account
@@ -58,9 +59,15 @@ type Message struct {
 // AvailablePhoneNumbers response form twilio
 type AvailablePhoneNumbers struct {
 	URI                   string `json:"uri"`
-	AvailablePhoneNumbers struct {
+	AvailablePhoneNumbers []struct {
 		FriendlyName string `json:"friendly_name"`
 		PhoneNumber  string `json:"phone_number"`
+		LATA         string `json:"lata"`
+		RateCenter   string `json:"rate_center"`
+		Latitude     string `json:"latitude"`
+		Longitude    string `json:"longitude"`
+		Region       string `json:"region"`
+		PostalCode   string `json:"postal_code"`
 		ISOCountry   string `json:"iso_country"`
 		Capabilities struct {
 			Voice bool `json:"voice"`

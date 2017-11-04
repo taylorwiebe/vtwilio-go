@@ -16,7 +16,7 @@ type availableConfiguration struct {
 	InLocality   string
 	InRegion     string
 	InRateCenter string
-	InLATA       string
+	InLata       string
 }
 
 // NearNumber Twilio Description:
@@ -87,6 +87,6 @@ func InRateCenter(r string) AvailableOption {
 // Given a phone number, search within the same LATA as that number.
 func InLATA(l string) AvailableOption {
 	return func(a *availableConfiguration) {
-		a.InLATA = l
+		a.InLata = l
 	}
 }

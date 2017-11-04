@@ -76,3 +76,18 @@ func handleListMessages(req *http.Request) (*List, error) {
 
 	return &data, nil
 }
+
+func handleAvailability(req *http.Request) (*AvailablePhoneNumbers, error) {
+	bodyBytes, err := handleRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var data AvailablePhoneNumbers
+	err = json.Unmarshal(bodyBytes, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}

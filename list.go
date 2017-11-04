@@ -20,9 +20,9 @@ func (v *VTwilio) ListMessages(opts ...ListOption) (*List, error) {
 }
 
 func (v *VTwilio) listMessages(config *listOptionConfiguration) (*List, error) {
-	urlStr := fmt.Sprintf("%v%v%v.json?PageSize=%v&Page=%v", baseAPI, v.accountSID, messageAPI, config.PageSize, config.Page)
+	urlStr := fmt.Sprintf("%s%s%s.json?PageSize=%v&Page=%v", baseAPI, v.accountSID, messageAPI, config.PageSize, config.Page)
 	if !config.Date.IsZero() {
-		urlStr = fmt.Sprintf("%v&%v", urlStr, handleDateRange(config.Date, config.DateRange))
+		urlStr = fmt.Sprintf("%s&%s", urlStr, handleDateRange(config.Date, config.DateRange))
 	}
 	req, err := http.NewRequest("GET", urlStr, nil)
 	if err != nil {

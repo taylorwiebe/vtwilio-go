@@ -27,7 +27,7 @@ func (v *VTwilio) sendMessage(message, to string) (*Message, error) {
 	values.Set("Body", message)
 	en := values.Encode()
 
-	urlStr := fmt.Sprintf("%v%v%v.json", baseAPI, v.accountSID, messageAPI)
+	urlStr := fmt.Sprintf("%s%s%vs.json", baseAPI, v.accountSID, messageAPI)
 	req, err := http.NewRequest("POST", urlStr, strings.NewReader(en))
 	if err != nil {
 		return nil, err
