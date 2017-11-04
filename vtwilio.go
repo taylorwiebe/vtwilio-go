@@ -12,6 +12,7 @@ const (
 	baseAPI                  = "https://api.twilio.com/2010-04-01/Accounts/"
 	messageAPI               = "/Messages"
 	availablePhoneNumbersAPI = "/AvailablePhoneNumbers"
+	incomingPhoneNumbersAPI  = "/IncomingPhoneNumbers"
 	local                    = "/Local"
 )
 
