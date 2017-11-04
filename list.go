@@ -6,8 +6,8 @@ import (
 )
 
 // ListMessages returns a list if the messages you have sent
-func (v *VTwilio) ListMessages(opts ...Option) (*List, error) {
-	c := &optionConfiguration{
+func (v *VTwilio) ListMessages(opts ...ListOption) (*List, error) {
+	c := &listOptionConfiguration{
 		PageSize: 10,
 		Page:     0,
 	}
@@ -19,7 +19,7 @@ func (v *VTwilio) ListMessages(opts ...Option) (*List, error) {
 	return v.listMessages(c)
 }
 
-func (v *VTwilio) listMessages(config *optionConfiguration) (*List, error) {
+func (v *VTwilio) listMessages(config *listOptionConfiguration) (*List, error) {
 	urlStr := fmt.Sprintf("%v%v%v.json?PageSize=%v&Page=%v", baseAPI, v.accountSID, messageAPI, config.PageSize, config.Page)
 	if !config.Date.IsZero() {
 		urlStr = fmt.Sprintf("%v&%v", urlStr, handleDateRange(config.Date, config.DateRange))

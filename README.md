@@ -1,5 +1,6 @@
 # VTwilio - Go
-### Version 0.0.1
+#####  Note: breaking changes may happen in releases before v1.0.0
+### Version 0.0.2
 Call the twilio rest api in go.
 
 ## Examples
@@ -46,5 +47,12 @@ func ListTwilioMessages() {
 ```
 
 ## Change Log
+### v0.0.2
+- Refactoring code
+- Add lookup for available phone numbers
+#### Breaking Changes
+- No longer required to pass a number to VTwilio in the case that you want to look up a number.
+This is now an option
+
 ### v0.0.1
 - Currently still a work in progress

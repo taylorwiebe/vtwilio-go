@@ -13,7 +13,7 @@ const (
 	after
 )
 
-type optionConfiguration struct {
+type listOptionConfiguration struct {
 	To        string
 	Date      time.Time
 	DateRange dateOption
@@ -21,50 +21,50 @@ type optionConfiguration struct {
 	Page      int
 }
 
-// Option is a list option
-type Option func(o *optionConfiguration)
+// ListOption is a list option
+type ListOption func(o *listOptionConfiguration)
 
 // To sets who the message is sent to
-func To(to string) Option {
-	return func(r *optionConfiguration) {
+func To(to string) ListOption {
+	return func(r *listOptionConfiguration) {
 		r.To = to
 	}
 }
 
 // OnDate get the messages for a specific ay
-func OnDate(date time.Time) Option {
-	return func(r *optionConfiguration) {
+func OnDate(date time.Time) ListOption {
+	return func(r *listOptionConfiguration) {
 		r.Date = date
 		r.DateRange = equal
 	}
 }
 
 // OnAndBeforeDate get the messages on and before the specified day
-func OnAndBeforeDate(date time.Time) Option {
-	return func(r *optionConfiguration) {
+func OnAndBeforeDate(date time.Time) ListOption {
+	return func(r *listOptionConfiguration) {
 		r.Date = date
 		r.DateRange = before
 	}
 }
 
 // OnAndAfterDate get the messages on and after the specified day
-func OnAndAfterDate(date time.Time) Option {
-	return func(r *optionConfiguration) {
+func OnAndAfterDate(date time.Time) ListOption {
+	return func(r *listOptionConfiguration) {
 		r.Date = date
 		r.DateRange = after
 	}
 }
 
 // PageSize sets the page size
-func PageSize(pageSize int) Option {
-	return func(r *optionConfiguration) {
+func PageSize(pageSize int) ListOption {
+	return func(r *listOptionConfiguration) {
 		r.PageSize = pageSize
 	}
 }
 
 // Page sets the page number
-func Page(page int) Option {
-	return func(r *optionConfiguration) {
+func Page(page int) ListOption {
+	return func(r *listOptionConfiguration) {
 		r.Page = page
 	}
 }
