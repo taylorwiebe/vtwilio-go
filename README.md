@@ -28,8 +28,8 @@ func GetATwilioMessage() {
 }
 ```
 
-### Get a list of messages
-#### List options
+### Get a List of Messages
+#### List Options
 - `PageSize(int)` - current page, defaults to 10
 - `Page(int)` - size of the page, defaults to 0
 - `OnDate(time.Time)` - Get messages on a date
@@ -47,6 +47,16 @@ func ListTwilioMessages() {
 ```
 
 ### Get Available Numbers
+#### Available Number Options
+`NearNumber`
+`NearLatLong`
+`Distance`
+`InPostalCode`
+`InLocality`
+`InRegion`
+`InRateCenter`
+`InLATA`
+
 ```
 func GetAvailableNumbers() {
 	t := vtwilio.NewVTwilio(sid, token)
