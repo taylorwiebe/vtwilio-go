@@ -9,6 +9,13 @@ import (
 	"time"
 )
 
+type errorMessage struct {
+	Code     int    `json:"code"`
+	Message  string `json:"message"`
+	MoreInfo string `json:"more_info"`
+	Status   int    `json:"status"`
+}
+
 func handleRequest(req *http.Request) ([]byte, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -17,14 +24,16 @@ func handleRequest(req *http.Request) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("Error, with status code: %v", resp.Status)
-	}
-
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		var err errorMessage
+		json.Unmarshal(bodyBytes, &err)
+		return nil, fmt.Errorf("Error: %v", err.Message)
+	}
+
 	return bodyBytes, nil
 }
 
@@ -84,6 +93,21 @@ func handleAvailability(req *http.Request) (*AvailablePhoneNumbers, error) {
 	}
 
 	var data AvailablePhoneNumbers
+	err = json.Unmarshal(bodyBytes, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
+func handleIncomingPhoneNumbers(req *http.Request) (*IncomingPhoneNumber, error) {
+	bodyBytes, err := handleRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var data IncomingPhoneNumber
 	err = json.Unmarshal(bodyBytes, &data)
 	if err != nil {
 		return nil, err

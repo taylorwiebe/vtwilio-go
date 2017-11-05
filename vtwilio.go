@@ -1,5 +1,7 @@
 package vtwilio
 
+import "time"
+
 // Interface for VTwilio
 type Interface interface {
 	SetPhoneNumber(n string) *VTwilio
@@ -7,6 +9,7 @@ type Interface interface {
 	ListMessages(opts ...ListOption) (*List, error)
 	GetMessage(messageSID string) (*Message, error)
 	AvailablePhoneNumbers(countryCode string, opts ...AvailableOption) (*AvailablePhoneNumbers, error)
+	PurchaseIncomingPhoneNumber(number string, opts ...IncomingPhoneNumberOption) error
 }
 
 const (
@@ -15,6 +18,7 @@ const (
 	availablePhoneNumbersAPI = "/AvailablePhoneNumbers"
 	incomingPhoneNumbersAPI  = "/IncomingPhoneNumbers"
 	local                    = "/Local"
+	tag                      = "vtwilio"
 )
 
 // VTwilio is a structure holding details about a twilio account
@@ -58,26 +62,46 @@ type Message struct {
 	} `json:"subresource_uris"`
 }
 
+// Capabilities structure
+type Capabilities struct {
+	Voice bool `json:"voice"`
+	SMS   bool `json:"SMS"`
+	MMS   bool `json:"MMS"`
+}
+
 // AvailablePhoneNumbers response form twilio
 type AvailablePhoneNumbers struct {
 	URI                   string `json:"uri"`
 	AvailablePhoneNumbers []struct {
-		FriendlyName string `json:"friendly_name"`
-		PhoneNumber  string `json:"phone_number"`
-		LATA         string `json:"lata"`
-		RateCenter   string `json:"rate_center"`
-		Latitude     string `json:"latitude"`
-		Longitude    string `json:"longitude"`
-		Region       string `json:"region"`
-		PostalCode   string `json:"postal_code"`
-		ISOCountry   string `json:"iso_country"`
-		Capabilities struct {
-			Voice bool `json:"voice"`
-			SMS   bool `json:"SMS"`
-			MMS   bool `json:"MMS"`
-		} `json:"capabilities"`
-		Beta bool `json:"beta"`
+		FriendlyName string       `json:"friendly_name"`
+		PhoneNumber  string       `json:"phone_number"`
+		LATA         string       `json:"lata"`
+		RateCenter   string       `json:"rate_center"`
+		Latitude     string       `json:"latitude"`
+		Longitude    string       `json:"longitude"`
+		Region       string       `json:"region"`
+		PostalCode   string       `json:"postal_code"`
+		ISOCountry   string       `json:"iso_country"`
+		Capabilities Capabilities `json:"capabilities"`
+		Beta         bool         `json:"beta"`
 	} `json:"available_phone_numbers"`
+}
+
+// IncomingPhoneNumber data from twilio
+type IncomingPhoneNumber struct {
+	SID                 string       `json:"sid"`
+	AccountSID          string       `json:"account_sid"`
+	FriendlyName        string       `json:"friendly_name"`
+	PhoneNumber         string       `json:"phone_number"`
+	VoiceURL            string       `json:"voice_url"`
+	VoiceMethod         string       `json:"voice_method"`
+	VoiceFallbackURL    string       `json:"voice_fallback_url"`
+	VoiceFallbackMethod string       `json:"voice_fallback_method"`
+	DateCreated         time.Time    `json:"date_created"`
+	DateUpdated         time.Time    `json:"date_updated"`
+	Capabilities        Capabilities `json:"capabilities"`
+	Beta                bool         `json:"beta"`
+	URI                 string       `json:"uri"`
 }
 
 // Option options for vtwilio
