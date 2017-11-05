@@ -24,10 +24,8 @@ func (v *VTwilio) PurchaseIncomingPhoneNumber(number string, opts ...IncomingPho
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(en)
 
 	urlStr := fmt.Sprintf("%s%s%s.json", baseAPI, v.accountSID, incomingPhoneNumbersAPI)
-	fmt.Println(urlStr)
 	req, err := http.NewRequest("POST", urlStr, strings.NewReader(en))
 	if err != nil {
 		return nil, err
