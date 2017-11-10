@@ -5,7 +5,7 @@ import "time"
 // Interface for VTwilio
 type Interface interface {
 	SetPhoneNumber(n string) *VTwilio
-	SendMessage(message string, to string) (*Message, error)
+	SendMessage(message string, to string, opts ...SendOption) (*Message, error)
 	ListMessages(opts ...ListOption) (*List, error)
 	GetMessage(messageSID string) (*Message, error)
 	AvailablePhoneNumbers(countryCode string, opts ...AvailableOption) (*AvailablePhoneNumbers, error)
