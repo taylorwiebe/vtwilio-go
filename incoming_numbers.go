@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// IncomingPhoneNumber stuff
+// IncomingPhoneNumber purchase an incoming phone number
 func (v *VTwilio) IncomingPhoneNumber(number string, opts ...IncomingPhoneNumberOption) (*IncomingPhoneNumber, error) {
 	if err := validateNumber(number); err != nil {
 		return nil, err
