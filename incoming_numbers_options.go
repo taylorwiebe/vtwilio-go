@@ -40,5 +40,54 @@ func FriendlyName(n string) IncomingPhoneNumberOption {
 	}
 }
 
+// VoiceURL Twilio description:
+// The URL Twilio will request when this phone number receives a call. The VoiceURL will no longer be used if
+//  a VoiceApplicationSid or a TrunkSid is set.
+func VoiceURL(url string) IncomingPhoneNumberOption {
+	return func(i *incomingNumberConfiguration) {
+		i.VoiceURL = url
+	}
+}
+
+// VoiceMethod Twilio description:
+// The HTTP method Twilio will use when requesting the above Url. Either GET or POST.
+func VoiceMethod(m Method) IncomingPhoneNumberOption {
+	return func(i *incomingNumberConfiguration) {
+		i.VoiceMethod = m.String()
+	}
+}
+
+// VoiceFallBackURL Twilio description:
+// A URL that Twilio will request if an error occurs requesting or executing the TwiML defined by VoiceUrl.
+func VoiceFallBackURL(url string) IncomingPhoneNumberOption {
+	return func(i *incomingNumberConfiguration) {
+		i.VoiceFallbackURL = url
+	}
+}
+
+// VoiceFallBackMethod Twilio description:
+// The HTTP method that should be used to request the VoiceFallbackUrl. Either GET or POST.
+func VoiceFallBackMethod(m Method) IncomingPhoneNumberOption {
+	return func(i *incomingNumberConfiguration) {
+		i.VoiceFallbackMethod = m.String()
+	}
+}
+
+// StatusCallback Twilio description:
+// The URL that Twilio will request to pass status parameters (such as call ended) to your application.
+func StatusCallback(url string) IncomingPhoneNumberOption {
+	return func(i *incomingNumberConfiguration) {
+		i.StatusCallback = url
+	}
+}
+
+// StatusCallbackMethod Twilio description:
+// The HTTP method that should be used to request the VoiceFallbackUrl. Either GET or POST.
+func StatusCallbackMethod(m Method) IncomingPhoneNumberOption {
+	return func(i *incomingNumberConfiguration) {
+		i.StatusCallbackMethod = m.String()
+	}
+}
+
 // IncomingPhoneNumberOption options for an incoming phone number purchase
 type IncomingPhoneNumberOption func(*incomingNumberConfiguration)
