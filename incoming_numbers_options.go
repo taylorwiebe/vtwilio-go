@@ -1,5 +1,7 @@
 package vtwilio
 
+import "strconv"
+
 type incomingNumberConfiguration struct {
 	PhoneNumber          string `vtwilio:"PhoneNumber"`
 	AreaCode             string `vtwilio:"AreaCode"`
@@ -10,7 +12,7 @@ type incomingNumberConfiguration struct {
 	VoiceFallbackMethod  string `vtwilio:"VoiceFallbackMethod"`
 	StatusCallback       string `vtwilio:"StatusCallback"`
 	StatusCallbackMethod string `vtwilio:"StatusCallbackMethod"`
-	VoiceCallerIDLookup  bool   `vtwilio:"VoiceCallerIdLookup"`
+	VoiceCallerIDLookup  string `vtwilio:"VoiceCallerIdLookup"`
 	VoiceApplicationSID  string `vtwilio:"VoiceApplicationSid"`
 	TrunkSID             string `vtwilio:"TrunkSid"`
 	SMSURL               string `vtwilio:"SmsUrl"`
@@ -105,7 +107,7 @@ func StatusCallbackMethod(m Method) IncomingPhoneNumberOption {
 // Do a lookup of a caller's name from the CNAM database and post it to your app. Either true or false.
 func VoiceCallerIDLookup(v bool) IncomingPhoneNumberOption {
 	return func(i *incomingNumberConfiguration) {
-		i.VoiceCallerIDLookup = v
+		i.VoiceCallerIDLookup = strconv.FormatBool(v)
 	}
 }
 
