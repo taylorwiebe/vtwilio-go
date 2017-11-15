@@ -10,6 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TODO test expected value
+
 func TestAvailableNumbers(t *testing.T) {
 	tests := []struct {
 		name          string

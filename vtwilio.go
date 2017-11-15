@@ -37,6 +37,10 @@ type List struct {
 	Messages        []*Message `json:"messages"`
 }
 
+type Media struct {
+	Media string `json:"media"`
+}
+
 // Message is a response from Twilio
 type Message struct {
 	SID                 string `json:"sid"`
@@ -58,9 +62,7 @@ type Message struct {
 	ErrorCode           string `json:"error_code"`
 	ErrorMessage        string `json:"error_message"`
 	URI                 string `json:"uri"`
-	SubresourceURIs     struct {
-		Media string `json:"media"`
-	} `json:"subresource_uris"`
+	SubresourceURIs     Media  `json:"subresource_uris"`
 }
 
 // Capabilities structure

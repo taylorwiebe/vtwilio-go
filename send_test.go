@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -55,28 +56,6 @@ func TestSendRequest(t *testing.T) {
 				baseAPI:      fmt.Sprintf("%s/", ts.URL),
 			}
 			v.SendMessage(tt.message, tt.to, tt.opts...)
-		})
-	}
-}
-
-func TestSendValidation(t *testing.T) {
-	tests := []struct {
-		name, message, to string
-		expectedError     error
-	}{
-		{"no message", "", "+12345678910", fmt.Errorf("must contain a message")},
-		{"no message", "Message", "", fmt.Errorf("must contain a phone number to send the message to")},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			v := &VTwilio{
-				accountSID:   "sid",
-				authToken:    "token",
-				twilioNumber: "+12345678910",
-			}
-			_, err := v.SendMessage(tt.message, tt.to)
-			assert.Equal(t, tt.expectedError, err)
 		})
 	}
 }
@@ -145,4 +124,69 @@ func TestSendBadRequest(t *testing.T) {
 		assert.Nil(t, actual)
 		assert.Error(t, err)
 	})
+}
+
+func TestHandlesResponse(t *testing.T) {
+	expected := &Message{
+		SID:                 "sid",
+		DateCreated:         time.Date(2017, time.January, 01, 01, 01, 01, 01, time.UTC).String(),
+		DateUpdated:         time.Date(2017, time.January, 01, 01, 01, 01, 01, time.UTC).String(),
+		DateSent:            time.Date(2017, time.January, 01, 01, 01, 01, 01, time.UTC).String(),
+		AccountSID:          "account_sid",
+		To:                  "+123445678910",
+		From:                "+10987654321",
+		MessagingServiceSID: "messaging_sid",
+		Body:                "message",
+		Status:              "200",
+		NumSegments:         "1",
+		NumMedia:            "0",
+		Direction:           "",
+		APIVersion:          "2010-04-01",
+		Price:               "0.00",
+		PriceUnit:           "1",
+		ErrorCode:           "",
+		ErrorMessage:        "",
+		URI:                 "uri",
+		SubresourceURIs: Media{
+			Media: "media",
+		},
+	}
+
+	tests := []struct {
+		name, message, to string
+		expected          *Message
+		expectedError     error
+	}{
+		{"no message", "", "+12345678910", nil, fmt.Errorf("must contain a message")},
+		{"no message", "Message", "", nil, fmt.Errorf("must contain a phone number to send the message to")},
+		{"valid request", "message", "+123445678910", expected, nil},
+	}
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		if r.Method != "POST" {
+			t.Errorf("Expected 'POST' got %v", r.Method)
+		}
+
+		bytes, err := json.Marshal(expected)
+		if err != nil {
+			t.Fatal(err)
+		}
+		w.Write(bytes)
+	}))
+	defer ts.Close()
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := &VTwilio{
+				accountSID:   "sid",
+				authToken:    "token",
+				twilioNumber: "+12345678910",
+				baseAPI:      fmt.Sprintf("%s/", ts.URL),
+			}
+			actual, err := v.SendMessage(tt.message, tt.to)
+			assert.Equal(t, tt.expected, actual)
+			assert.Equal(t, tt.expectedError, err)
+		})
+	}
 }
