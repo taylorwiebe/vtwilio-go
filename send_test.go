@@ -126,6 +126,8 @@ func TestSendBadRequest(t *testing.T) {
 	})
 }
 
+// TODO validate date time
+
 func TestHandlesResponse(t *testing.T) {
 	expected := &Message{
 		SID:                 "sid",
