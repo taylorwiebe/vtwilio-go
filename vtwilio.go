@@ -37,6 +37,7 @@ type List struct {
 	Messages        []*Message `json:"messages"`
 }
 
+// Media contains media data
 type Media struct {
 	Media string `json:"media"`
 }
