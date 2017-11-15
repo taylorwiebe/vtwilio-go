@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
-	"time"
 )
 
 type errorMessage struct {
@@ -35,19 +33,6 @@ func handleRequest(req *http.Request) ([]byte, error) {
 	}
 
 	return bodyBytes, nil
-}
-
-func handleDateRange(date time.Time, opt dateOption) string {
-	t := date.Format("2006-01-02T15:04:05.999999-07:00")
-	t = strings.Split(t, "T")[0]
-	if opt == before {
-		return fmt.Sprintf("DateSent<=%v", t)
-	} else if opt == after {
-		return fmt.Sprintf("DateSent>=%v", t)
-	} else if opt == equal {
-		return fmt.Sprintf("DateSent=%v", t)
-	}
-	return ""
 }
 
 func setUpRequest(req *http.Request, accountSID, authToken string) {
