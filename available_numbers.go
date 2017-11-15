@@ -14,12 +14,9 @@ func (v *VTwilio) AvailablePhoneNumbers(countryCode string, opts ...AvailableOpt
 		o(config)
 	}
 
-	val, err := buildValues(config)
-	if err != nil {
-		return nil, err
-	}
+	val := buildValues(config)
 
-	urlStr := fmt.Sprintf("%s%s%s/%s%s.json?%s", baseAPI, v.accountSID, availablePhoneNumbersAPI, countryCode, local, val)
+	urlStr := fmt.Sprintf("%s%s%s/%s%s.json?%s", v.baseAPI, v.accountSID, availablePhoneNumbersAPI, countryCode, local, val)
 	req, err := http.NewRequest("GET", urlStr, nil)
 	if err != nil {
 		return nil, err
@@ -28,18 +25,15 @@ func (v *VTwilio) AvailablePhoneNumbers(countryCode string, opts ...AvailableOpt
 	return handleAvailability(req)
 }
 
-func buildValues(c *availableConfiguration) (string, error) {
+func buildValues(c *availableConfiguration) string {
 	v := reflect.Indirect(reflect.ValueOf(c))
 	values := []string{}
 	for i := 0; i < v.NumField(); i++ {
-		val, ok := v.Field(i).Interface().(string)
-		if !ok {
-			return "", fmt.Errorf("unable to build values")
-		}
+		val := v.Field(i).Interface().(string)
 		if val == "" {
 			continue
 		}
 		values = append(values, fmt.Sprintf("%s=%s", v.Type().Field(i).Name, val))
 	}
-	return strings.Join(values, "&"), nil
+	return strings.Join(values, "&")
 }

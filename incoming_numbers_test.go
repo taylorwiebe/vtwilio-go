@@ -386,7 +386,7 @@ func TestIncomingNumbersBadResponse(t *testing.T) {
 	})
 }
 
-func TestBadRequest(t *testing.T) {
+func TestIncomingNumbersBadRequest(t *testing.T) {
 	t.Run("bad url", func(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			resp := struct {
