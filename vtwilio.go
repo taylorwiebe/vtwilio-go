@@ -26,6 +26,7 @@ type VTwilio struct {
 	accountSID   string
 	authToken    string
 	twilioNumber string
+	baseAPI      string
 }
 
 // List is a response from a get
@@ -120,7 +121,12 @@ func NewVTwilio(accountSID, authToken string, opts ...Option) *VTwilio {
 	for _, o := range opts {
 		o(v)
 	}
+	setDefaults(v)
 	return v
+}
+
+func setDefaults(v *VTwilio) {
+	v.baseAPI = baseAPI
 }
 
 // SetPhoneNumber sets the twilio phone number

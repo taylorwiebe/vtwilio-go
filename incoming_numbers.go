@@ -20,12 +20,9 @@ func (v *VTwilio) IncomingPhoneNumber(number string, opts ...IncomingPhoneNumber
 		o(config)
 	}
 
-	en, err := buildPostValues(config)
-	if err != nil {
-		return nil, err
-	}
+	en := buildPostValues(config)
 
-	urlStr := fmt.Sprintf("%s%s%s.json", baseAPI, v.accountSID, incomingPhoneNumbersAPI)
+	urlStr := fmt.Sprintf("%s%s%s.json", v.baseAPI, v.accountSID, incomingPhoneNumbersAPI)
 	req, err := http.NewRequest("POST", urlStr, strings.NewReader(en))
 	if err != nil {
 		return nil, err
@@ -51,18 +48,15 @@ func validateNumber(n string) error {
 	return nil
 }
 
-func buildPostValues(c *incomingNumberConfiguration) (string, error) {
+func buildPostValues(c *incomingNumberConfiguration) string {
 	v := reflect.Indirect(reflect.ValueOf(c))
 	values := url.Values{}
 	for i := 0; i < v.NumField(); i++ {
-		val, ok := v.Field(i).Interface().(string)
-		if !ok {
-			return "", fmt.Errorf("unable to build values")
-		}
+		val, _ := v.Field(i).Interface().(string)
 		if val == "" {
 			continue
 		}
 		values.Set(v.Type().Field(i).Tag.Get(tag), val)
 	}
-	return values.Encode(), nil
+	return values.Encode()
 }

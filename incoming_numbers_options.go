@@ -1,13 +1,15 @@
 package vtwilio
 
-import "strconv"
+import (
+	"strconv"
+)
 
 type incomingNumberConfiguration struct {
 	PhoneNumber          string `vtwilio:"PhoneNumber"`
 	AreaCode             string `vtwilio:"AreaCode"`
 	FriendlyName         string `vtwilio:"FriendlyName"`
 	VoiceURL             string `vtwilio:"VoiceUrl"`
-	VoiceMethod          string `vtwilio:"FriendlyName"`
+	VoiceMethod          string `vtwilio:"VoiceMethod"`
 	VoiceFallbackURL     string `vtwilio:"VoiceFallbackUrl"`
 	VoiceFallbackMethod  string `vtwilio:"VoiceFallbackMethod"`
 	StatusCallback       string `vtwilio:"StatusCallback"`
@@ -42,6 +44,10 @@ func AreaCode(a string) IncomingPhoneNumberOption {
 // Calls to this phone number will start a new TwiML session with this API version. Either 2010-04-01 or 2008-08-01.
 func APIVersion(v string) IncomingPhoneNumberOption {
 	return func(i *incomingNumberConfiguration) {
+		if v != "2010-04-01" && v != "2008-08-01" {
+			i.APIVersion = "2010-04-01"
+			return
+		}
 		i.APIVersion = v
 	}
 }
