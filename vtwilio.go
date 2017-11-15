@@ -73,22 +73,25 @@ type Capabilities struct {
 	MMS   bool `json:"MMS"`
 }
 
+// AvaliblePhoneNumberData is the data for an avalible phone number
+type AvaliblePhoneNumberData struct {
+	FriendlyName string       `json:"friendly_name"`
+	PhoneNumber  string       `json:"phone_number"`
+	LATA         string       `json:"lata"`
+	RateCenter   string       `json:"rate_center"`
+	Latitude     string       `json:"latitude"`
+	Longitude    string       `json:"longitude"`
+	Region       string       `json:"region"`
+	PostalCode   string       `json:"postal_code"`
+	ISOCountry   string       `json:"iso_country"`
+	Capabilities Capabilities `json:"capabilities"`
+	Beta         bool         `json:"beta"`
+}
+
 // AvailablePhoneNumbers response form twilio
 type AvailablePhoneNumbers struct {
-	URI                   string `json:"uri"`
-	AvailablePhoneNumbers []struct {
-		FriendlyName string       `json:"friendly_name"`
-		PhoneNumber  string       `json:"phone_number"`
-		LATA         string       `json:"lata"`
-		RateCenter   string       `json:"rate_center"`
-		Latitude     string       `json:"latitude"`
-		Longitude    string       `json:"longitude"`
-		Region       string       `json:"region"`
-		PostalCode   string       `json:"postal_code"`
-		ISOCountry   string       `json:"iso_country"`
-		Capabilities Capabilities `json:"capabilities"`
-		Beta         bool         `json:"beta"`
-	} `json:"available_phone_numbers"`
+	URI                   string                    `json:"uri"`
+	AvailablePhoneNumbers []AvaliblePhoneNumberData `json:"available_phone_numbers"`
 }
 
 // IncomingPhoneNumber data from twilio

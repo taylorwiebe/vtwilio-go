@@ -10,14 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TODO test expected value
-
 func TestAvailableNumbers(t *testing.T) {
 	tests := []struct {
 		name          string
 		in            []AvailableOption
 		expectedPath  string
 		expectedQuery string
+		checkExpected bool
+		expectedError error
 	}{
 		{
 			name:         "no options",
@@ -78,12 +78,49 @@ func TestAvailableNumbers(t *testing.T) {
 			expectedPath:  "/sid/AvailablePhoneNumbers/US/Local.json",
 			expectedQuery: "Distance=25&InRegion=CALIFORNIA&InLata=lata",
 		},
+		{
+			name:          "multiple options",
+			in:            []AvailableOption{InLATA("lata"), Distance(25), InRegion("CALIFORNIA")},
+			expectedPath:  "/sid/AvailablePhoneNumbers/US/Local.json",
+			expectedQuery: "Distance=25&InRegion=CALIFORNIA&InLata=lata",
+		},
+		{
+			name:          "check response",
+			in:            []AvailableOption{},
+			expectedPath:  "/sid/AvailablePhoneNumbers/US/Local.json",
+			checkExpected: true,
+			expectedError: nil,
+		},
 	}
+	expected := &AvailablePhoneNumbers{
+		URI: "uri",
+		AvailablePhoneNumbers: []AvaliblePhoneNumberData{
+			AvaliblePhoneNumberData{
+				FriendlyName: "name",
+				PhoneNumber:  "12345678910",
+				LATA:         "lata",
+				RateCenter:   "rate",
+				Latitude:     "34.0928",
+				Longitude:    "118.3287",
+				Region:       "CALIFORNIA",
+				PostalCode:   "90210",
+				ISOCountry:   "US",
+				Capabilities: Capabilities{SMS: true},
+				Beta:         true,
+			},
+		},
+	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				assert.Equal(t, tt.expectedPath, r.URL.Path)
 				assert.Equal(t, tt.expectedQuery, r.URL.RawQuery)
+				bytes, err := json.Marshal(expected)
+				if err != nil {
+					t.Fatal(err)
+				}
+				w.Write(bytes)
 			}))
 			defer ts.Close()
 
@@ -93,7 +130,18 @@ func TestAvailableNumbers(t *testing.T) {
 				twilioNumber: "+12345678910",
 				baseAPI:      fmt.Sprintf("%s/", ts.URL),
 			}
-			v.AvailablePhoneNumbers("US", tt.in...)
+			actual, err := v.AvailablePhoneNumbers("US", tt.in...)
+
+			if tt.checkExpected {
+				assert.Equal(t, expected, actual)
+				if tt.expectedError != nil && err == nil {
+					t.Error("expected error, got nil")
+				} else if tt.expectedError == nil && err != nil {
+					t.Errorf("did not expect an error, got: %v", err)
+				} else {
+					assert.Equal(t, tt.expectedError, err)
+				}
+			}
 		})
 	}
 }
