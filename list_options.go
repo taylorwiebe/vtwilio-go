@@ -15,6 +15,7 @@ const (
 
 type listOptionConfiguration struct {
 	To        string
+	From      string
 	Date      time.Time
 	DateRange dateOption
 	PageSize  int
@@ -28,6 +29,13 @@ type ListOption func(o *listOptionConfiguration)
 func To(to string) ListOption {
 	return func(r *listOptionConfiguration) {
 		r.To = to
+	}
+}
+
+// From sets who the message was from
+func From(from string) ListOption {
+	return func(r *listOptionConfiguration) {
+		r.From = from
 	}
 }
 

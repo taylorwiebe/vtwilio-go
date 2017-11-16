@@ -65,7 +65,13 @@ func TestListMessages(t *testing.T) {
 			name:          "to",
 			in:            []ListOption{To("+12345678910")},
 			expectedPath:  "/sid/Messages.json",
-			expectedQuery: "PageSize=10&Page=0",
+			expectedQuery: "PageSize=10&Page=0&To=+12345678910",
+		},
+		{
+			name:          "to",
+			in:            []ListOption{From("+12345678910")},
+			expectedPath:  "/sid/Messages.json",
+			expectedQuery: "PageSize=10&Page=0&From=+12345678910",
 		},
 		{
 			name:          "on date",
