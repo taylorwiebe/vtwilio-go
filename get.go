@@ -14,7 +14,7 @@ func (v *VTwilio) GetMessage(messageSID string) (*Message, error) {
 }
 
 func (v *VTwilio) getMessage(messageSID string) (*Message, error) {
-	urlStr := fmt.Sprintf("%v%v%v/%v.json", baseAPI, v.accountSID, messageAPI, messageSID)
+	urlStr := fmt.Sprintf("%v%v%v/%v.json", v.baseAPI, v.accountSID, messageAPI, messageSID)
 	req, err := http.NewRequest("GET", urlStr, nil)
 	if err != nil {
 		return nil, err
