@@ -11,13 +11,35 @@ import (
 )
 
 func TestAvailableNumbers(t *testing.T) {
+	expected := &AvailablePhoneNumbers{
+		URI: "uri",
+		AvailablePhoneNumber: []AvailablePhoneNumberData{
+			AvailablePhoneNumberData{
+				FriendlyName: "name",
+				PhoneNumber:  "12345678910",
+				LATA:         "lata",
+				RateCenter:   "rate",
+				Latitude:     "34.0928",
+				Longitude:    "118.3287",
+				Region:       "CALIFORNIA",
+				PostalCode:   "90210",
+				ISOCountry:   "US",
+				Capabilities: Capabilities{SMS: true},
+				Beta:         true,
+			},
+		},
+	}
+
 	tests := []struct {
 		name          string
 		in            []AvailableOption
+		expected      *AvailablePhoneNumbers
 		expectedPath  string
 		expectedQuery string
+		failServer    bool
 		checkExpected bool
-		expectedError error
+		expectedError bool
+		requestURL    string
 	}{
 		{
 			name:         "no options",
@@ -88,32 +110,51 @@ func TestAvailableNumbers(t *testing.T) {
 			name:          "check response",
 			in:            []AvailableOption{},
 			expectedPath:  "/sid/AvailablePhoneNumbers/US/Local.json",
+			expected:      expected,
 			checkExpected: true,
-			expectedError: nil,
+			expectedError: false,
 		},
-	}
-	expected := &AvailablePhoneNumbers{
-		URI: "uri",
-		AvailablePhoneNumbers: []AvaliblePhoneNumberData{
-			AvaliblePhoneNumberData{
-				FriendlyName: "name",
-				PhoneNumber:  "12345678910",
-				LATA:         "lata",
-				RateCenter:   "rate",
-				Latitude:     "34.0928",
-				Longitude:    "118.3287",
-				Region:       "CALIFORNIA",
-				PostalCode:   "90210",
-				ISOCountry:   "US",
-				Capabilities: Capabilities{SMS: true},
-				Beta:         true,
-			},
+		{
+			name:          "bad request",
+			in:            []AvailableOption{},
+			expectedPath:  "/sid/AvailablePhoneNumbers/US/Local.json",
+			expected:      nil,
+			checkExpected: true,
+			expectedError: true,
+			failServer:    true,
+		},
+		{
+			name:          "bad request url",
+			in:            []AvailableOption{},
+			expectedPath:  "/sid/AvailablePhoneNumbers/US/Local.json",
+			expected:      nil,
+			checkExpected: true,
+			expectedError: true,
+			requestURL:    "http://192.168.0.%31/",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if tt.failServer {
+					resp := struct {
+						Status  int
+						Message string
+					}{
+						Status:  400,
+						Message: "invalid request",
+					}
+
+					w.WriteHeader(http.StatusBadRequest)
+					bytes, err := json.Marshal(&resp)
+					if err != nil {
+						t.Error(err)
+					}
+					w.Write(bytes)
+					return
+				}
+
 				assert.Equal(t, tt.expectedPath, r.URL.Path)
 				assert.Equal(t, tt.expectedQuery, r.URL.RawQuery)
 				bytes, err := json.Marshal(expected)
@@ -124,22 +165,25 @@ func TestAvailableNumbers(t *testing.T) {
 			}))
 			defer ts.Close()
 
+			requestURL := fmt.Sprintf("%s/", ts.URL)
+			if tt.requestURL != "" {
+				requestURL = tt.requestURL
+			}
+
 			v := &VTwilio{
 				accountSID:   "sid",
 				authToken:    "token",
 				twilioNumber: "+12345678910",
-				baseAPI:      fmt.Sprintf("%s/", ts.URL),
+				baseAPI:      requestURL,
 			}
 			actual, err := v.AvailablePhoneNumbers("US", tt.in...)
 
 			if tt.checkExpected {
-				assert.Equal(t, expected, actual)
-				if tt.expectedError != nil && err == nil {
+				assert.Equal(t, tt.expected, actual)
+				if tt.expectedError && err == nil {
 					t.Error("expected error, got nil")
-				} else if tt.expectedError == nil && err != nil {
+				} else if !tt.expectedError && err != nil {
 					t.Errorf("did not expect an error, got: %v", err)
-				} else {
-					assert.Equal(t, tt.expectedError, err)
 				}
 			}
 		})
@@ -195,70 +239,4 @@ func TestBuildValues(t *testing.T) {
 			assert.Equal(t, tt.expected, actual)
 		})
 	}
-}
-
-func TestAvaliblePhoneNumberBadResponse(t *testing.T) {
-	t.Run("bad request", func(t *testing.T) {
-		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			resp := struct {
-				Status  int
-				Message string
-			}{
-				Status:  400,
-				Message: "invalid request",
-			}
-
-			w.WriteHeader(http.StatusBadRequest)
-			bytes, err := json.Marshal(&resp)
-			if err != nil {
-				t.Error(err)
-			}
-			w.Write(bytes)
-		}))
-		defer ts.Close()
-
-		v := &VTwilio{
-			accountSID:   "sid",
-			authToken:    "token",
-			twilioNumber: "+12345678910",
-			baseAPI:      fmt.Sprintf("%s/", ts.URL),
-		}
-		actual, err := v.AvailablePhoneNumbers("US")
-
-		assert.Nil(t, actual)
-		assert.Equal(t, fmt.Errorf("Error: invalid request"), err)
-	})
-}
-
-func TestAvaliblePhoneNumberBadRequest(t *testing.T) {
-	t.Run("bad url", func(t *testing.T) {
-		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			resp := struct {
-				Status  int
-				Message string
-			}{
-				Status:  400,
-				Message: "invalid request",
-			}
-
-			w.WriteHeader(http.StatusBadRequest)
-			bytes, err := json.Marshal(&resp)
-			if err != nil {
-				t.Error(err)
-			}
-			w.Write(bytes)
-		}))
-		defer ts.Close()
-
-		v := &VTwilio{
-			accountSID:   "sid",
-			authToken:    "token",
-			twilioNumber: "+12345678910",
-			baseAPI:      "http://192.168.0.%31/",
-		}
-		actual, err := v.AvailablePhoneNumbers("US")
-
-		assert.Nil(t, actual)
-		assert.Error(t, err)
-	})
 }

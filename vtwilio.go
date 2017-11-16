@@ -73,8 +73,8 @@ type Capabilities struct {
 	MMS   bool `json:"MMS"`
 }
 
-// AvaliblePhoneNumberData is the data for an avalible phone number
-type AvaliblePhoneNumberData struct {
+// AvailablePhoneNumberData is the data for an avalible phone number
+type AvailablePhoneNumberData struct {
 	FriendlyName string       `json:"friendly_name"`
 	PhoneNumber  string       `json:"phone_number"`
 	LATA         string       `json:"lata"`
@@ -90,8 +90,8 @@ type AvaliblePhoneNumberData struct {
 
 // AvailablePhoneNumbers response form twilio
 type AvailablePhoneNumbers struct {
-	URI                   string                    `json:"uri"`
-	AvailablePhoneNumbers []AvaliblePhoneNumberData `json:"available_phone_numbers"`
+	URI                  string                     `json:"uri"`
+	AvailablePhoneNumber []AvailablePhoneNumberData `json:"available_phone_numbers"`
 }
 
 // IncomingPhoneNumber data from twilio
