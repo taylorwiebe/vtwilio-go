@@ -1,7 +1,5 @@
 package vtwilio
 
-import "time"
-
 // Interface for VTwilio
 type Interface interface {
 	SetPhoneNumber(n string) *VTwilio
@@ -73,7 +71,7 @@ type Capabilities struct {
 	MMS   bool `json:"MMS"`
 }
 
-// AvailablePhoneNumberData is the data for an avalible phone number
+// AvailablePhoneNumberData is the data for an available phone number
 type AvailablePhoneNumberData struct {
 	FriendlyName string       `json:"friendly_name"`
 	PhoneNumber  string       `json:"phone_number"`
@@ -104,8 +102,8 @@ type IncomingPhoneNumber struct {
 	VoiceMethod         string       `json:"voice_method"`
 	VoiceFallbackURL    string       `json:"voice_fallback_url"`
 	VoiceFallbackMethod string       `json:"voice_fallback_method"`
-	DateCreated         time.Time    `json:"date_created"`
-	DateUpdated         time.Time    `json:"date_updated"`
+	DateCreated         string       `json:"date_created"`
+	DateUpdated         string       `json:"date_updated"`
 	Capabilities        Capabilities `json:"capabilities"`
 	Beta                bool         `json:"beta"`
 	URI                 string       `json:"uri"`
