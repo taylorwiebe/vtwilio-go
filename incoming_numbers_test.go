@@ -353,6 +353,50 @@ func TestIncomingNumbersRequests(t *testing.T) {
 	}
 }
 
+func TestUpdateIncomingNumbersRequests(t *testing.T) {
+	tests := []struct {
+		name         string
+		in           []IncomingPhoneNumberOption
+		expectedPath string
+		expectedBody string
+	}{
+		{
+			name:         "no options",
+			in:           []IncomingPhoneNumberOption{},
+			expectedPath: "/sid/IncomingPhoneNumbers/numbersid.json",
+			expectedBody: "PhoneNumber=%2B12345678910",
+		},
+		{
+			name:         "area code option",
+			in:           []IncomingPhoneNumberOption{AreaCode("90210")},
+			expectedPath: "/sid/IncomingPhoneNumbers/numbersid.json",
+			expectedBody: "AreaCode=90210&PhoneNumber=%2B12345678910",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				assert.Equal(t, tt.expectedPath, r.URL.Path)
+				body, err := ioutil.ReadAll(r.Body)
+				if err != nil {
+					t.Errorf("failed to read body: %v", err)
+				}
+				assert.Equal(t, tt.expectedBody, string(body))
+			}))
+			defer ts.Close()
+
+			v := &VTwilio{
+				accountSID:   "sid",
+				authToken:    "token",
+				twilioNumber: "+12345678910",
+				baseAPI:      fmt.Sprintf("%s/", ts.URL),
+			}
+			v.UpdateIncomingPhoneNumber("+12345678910", "numbersid", tt.in...)
+		})
+	}
+}
+
 func TestIncomingNumbersBadResponse(t *testing.T) {
 	t.Run("bad request", func(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

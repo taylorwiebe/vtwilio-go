@@ -7,7 +7,9 @@ type Interface interface {
 	ListMessages(opts ...ListOption) (*List, error)
 	GetMessage(messageSID string) (*Message, error)
 	AvailablePhoneNumbers(countryCode string, opts ...AvailableOption) (*AvailablePhoneNumbers, error)
-	IncomingPhoneNumber(number string, opts ...IncomingPhoneNumberOption) error
+	IncomingPhoneNumber(number string, opts ...IncomingPhoneNumberOption) (*IncomingPhoneNumber, error)
+	UpdateIncomingPhoneNumber(number, sid string, opts ...IncomingPhoneNumberOption) (*IncomingPhoneNumber, error)
+	ReleaseNumber(sid string) error
 }
 
 const (
