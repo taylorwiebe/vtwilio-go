@@ -63,7 +63,7 @@ func (_m *Interface) GetMessage(messageSID string) (*vtwilio.Message, error) {
 }
 
 // IncomingPhoneNumber provides a mock function with given fields: number, opts
-func (_m *Interface) IncomingPhoneNumber(number string, opts ...vtwilio.IncomingPhoneNumberOption) error {
+func (_m *Interface) IncomingPhoneNumber(number string, opts ...vtwilio.IncomingPhoneNumberOption) (*vtwilio.IncomingPhoneNumber, error) {
 	_va := make([]interface{}, len(opts))
 	for _i := range opts {
 		_va[_i] = opts[_i]
@@ -73,14 +73,23 @@ func (_m *Interface) IncomingPhoneNumber(number string, opts ...vtwilio.Incoming
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string, ...vtwilio.IncomingPhoneNumberOption) error); ok {
+	var r0 *vtwilio.IncomingPhoneNumber
+	if rf, ok := ret.Get(0).(func(string, ...vtwilio.IncomingPhoneNumberOption) *vtwilio.IncomingPhoneNumber); ok {
 		r0 = rf(number, opts...)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vtwilio.IncomingPhoneNumber)
+		}
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string, ...vtwilio.IncomingPhoneNumberOption) error); ok {
+		r1 = rf(number, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // ListMessages provides a mock function with given fields: opts
@@ -110,6 +119,20 @@ func (_m *Interface) ListMessages(opts ...vtwilio.ListOption) (*vtwilio.List, er
 	}
 
 	return r0, r1
+}
+
+// ReleaseNumber provides a mock function with given fields: sid
+func (_m *Interface) ReleaseNumber(sid string) error {
+	ret := _m.Called(sid)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string) error); ok {
+		r0 = rf(sid)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // SendMessage provides a mock function with given fields: message, to, opts
@@ -156,4 +179,34 @@ func (_m *Interface) SetPhoneNumber(n string) *vtwilio.VTwilio {
 	}
 
 	return r0
+}
+
+// UpdateIncomingPhoneNumber provides a mock function with given fields: number, sid, opts
+func (_m *Interface) UpdateIncomingPhoneNumber(number string, sid string, opts ...vtwilio.IncomingPhoneNumberOption) (*vtwilio.IncomingPhoneNumber, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, number, sid)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *vtwilio.IncomingPhoneNumber
+	if rf, ok := ret.Get(0).(func(string, string, ...vtwilio.IncomingPhoneNumberOption) *vtwilio.IncomingPhoneNumber); ok {
+		r0 = rf(number, sid, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vtwilio.IncomingPhoneNumber)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string, string, ...vtwilio.IncomingPhoneNumberOption) error); ok {
+		r1 = rf(number, sid, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
