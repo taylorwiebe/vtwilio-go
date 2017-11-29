@@ -397,6 +397,64 @@ func TestUpdateIncomingNumbersRequests(t *testing.T) {
 	}
 }
 
+func TestReleaseIncomingNumbersRequests(t *testing.T) {
+	tests := []struct {
+		name          string
+		in            string
+		expectedPath  string
+		expectedError bool
+		failServer    bool
+	}{
+		{
+			name:         "successful delete",
+			in:           "numbersid",
+			expectedPath: "/sid/IncomingPhoneNumbers/numbersid.json",
+		},
+		{
+			name:          "server fail",
+			in:            "numbersid",
+			expectedPath:  "/sid/IncomingPhoneNumbers/numbersid.json",
+			failServer:    true,
+			expectedError: true,
+		},
+		{
+			name:          "missing sid",
+			in:            "",
+			expectedError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				assert.Equal(t, tt.expectedPath, r.URL.Path)
+				if tt.failServer {
+					w.WriteHeader(http.StatusBadGateway)
+					return
+				}
+				w.WriteHeader(http.StatusNoContent)
+				if r.Method != "DELETE" {
+					t.Errorf("Expected 'DELETE' got %v", r.Method)
+				}
+			}))
+			defer ts.Close()
+
+			v := &VTwilio{
+				accountSID:   "sid",
+				authToken:    "token",
+				twilioNumber: "+12345678910",
+				baseAPI:      fmt.Sprintf("%s/", ts.URL),
+			}
+			err := v.ReleaseNumber(tt.in)
+			if err != nil && !tt.expectedError {
+				t.Errorf("did not expect error, got: %v", err)
+			} else if err == nil && tt.expectedError {
+				t.Error("expected an error, got none")
+			}
+		})
+	}
+}
+
 func TestIncomingNumbersBadResponse(t *testing.T) {
 	t.Run("bad request", func(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

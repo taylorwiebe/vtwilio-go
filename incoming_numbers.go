@@ -1,7 +1,6 @@
 package vtwilio
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -31,11 +30,7 @@ func (v *VTwilio) incomingPhoneNumber(number, sid string, opts ...IncomingPhoneN
 	}
 	en := buildPostValues(config)
 
-	urlStr := fmt.Sprintf("%s%s%s", v.baseAPI, v.accountSID, incomingPhoneNumbersAPI)
-	if sid != "" {
-		urlStr = fmt.Sprintf("%s/%s", urlStr, sid)
-	}
-	urlStr = fmt.Sprintf("%s.json", urlStr)
+	urlStr := buildIncomingPhoneNumber(v.baseAPI, v.accountSID, sid)
 
 	req, err := http.NewRequest("POST", urlStr, strings.NewReader(en))
 	if err != nil {
@@ -45,9 +40,28 @@ func (v *VTwilio) incomingPhoneNumber(number, sid string, opts ...IncomingPhoneN
 	return handleIncomingPhoneNumbers(req)
 }
 
+func buildIncomingPhoneNumber(api, accountSID, sid string) string {
+	urlStr := fmt.Sprintf("%s%s%s", api, accountSID, incomingPhoneNumbersAPI)
+	if sid != "" {
+		urlStr = fmt.Sprintf("%s/%s", urlStr, sid)
+	}
+	urlStr = fmt.Sprintf("%s.json", urlStr)
+	return urlStr
+}
+
 // ReleaseNumber "deletes" a number. This number could be used by someone else.
 func (v *VTwilio) ReleaseNumber(sid string) error {
-	return errors.New("not implemented")
+	if sid == "" {
+		return fmt.Errorf("invalid sid")
+	}
+
+	urlStr := buildIncomingPhoneNumber(v.baseAPI, v.accountSID, sid)
+	req, err := http.NewRequest("DELETE", urlStr, nil)
+	if err != nil {
+		return err
+	}
+	setUpRequest(req, v.accountSID, v.authToken)
+	return genericHandler(req)
 }
 
 func validateNumber(n string) error {

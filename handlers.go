@@ -100,3 +100,10 @@ func handleIncomingPhoneNumbers(req *http.Request) (*IncomingPhoneNumber, error)
 
 	return &data, nil
 }
+
+func genericHandler(req *http.Request) error {
+	if _, err := handleRequest(req); err != nil {
+		return err
+	}
+	return nil
+}
