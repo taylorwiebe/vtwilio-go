@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
 	"github.com/twiebe-va/vtwilio-go/twiml"
 )
 

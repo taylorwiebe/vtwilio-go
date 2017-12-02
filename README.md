@@ -1,6 +1,6 @@
 # VTwilio - Go
 #####  Note: breaking changes may happen in releases before v1.0.0
-### Version 0.0.2
+### Version 0.0.3
 Call the twilio rest api in go.
 
 ## Examples
@@ -67,8 +67,16 @@ func GetAvailableNumbers() {
 	fmt.Println(numbers)
 }
 ```
+### Get Available Numbers
+docs coming soon.
+
+### TwiML
+docs coming soon.
 
 ## Change Log
+### v0.0.3
+- TwiML support
+- Incoming phone numbers
 ### v0.0.2
 - Refactoring code
 - Add lookup for available phone numbers
