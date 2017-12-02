@@ -67,7 +67,7 @@ func GetAvailableNumbers() {
 	fmt.Println(numbers)
 }
 ```
-### Get Available Numbers
+### Incoming Phone Numbers
 docs coming soon.
 
 ### TwiML
