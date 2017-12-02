@@ -57,7 +57,7 @@ type Reject struct {
 type Dial struct {
 	XMLName  xml.Name `xml:"Dial"`
 	Action   string   `xml:"action,attr,omitempty"`
-	Method   string   `xml:"method,attr,omitempty"`
+	Method   Method   `xml:"method,attr,omitempty"`
 	CallerID string   `xml:"callerId,attr,omitempty"`
 	Number   string   `xml:",omitempty"`
 }
@@ -119,7 +119,7 @@ func DialAction(a string) DialOption {
 }
 
 // DialMethod method of the dial callback
-func DialMethod(m string) DialOption {
+func DialMethod(m Method) DialOption {
 	return func(d *Dial) {
 		d.Method = m
 	}

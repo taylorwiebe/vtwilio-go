@@ -16,6 +16,16 @@ func TestBuild(t *testing.T) {
 		expectedError bool
 	}{
 		{
+			name: "message",
+			in:   twiml.NewTwiML().Message("My Message"),
+			expected: "<Response>\n	<Message>My Message</Message>\n</Response>",
+		},
+		{
+			name: "redirect",
+			in:   twiml.NewTwiML().Redirect("/someplace.xml"),
+			expected: "<Response>\n	<Redirect>/someplace.xml</Redirect>\n</Response>",
+		},
+		{
 			name: "say",
 			in:   twiml.NewTwiML().Say("My message"),
 			expected: "<Response>\n	<Say>My message</Say>\n</Response>",
@@ -84,6 +94,59 @@ func TestBuild(t *testing.T) {
 				twiml.SMSFrom("+12345678910"),
 				twiml.SMSTo("+12345678910")),
 			expected: "<Response>\n\t<Sms to=\"+12345678910\" from=\"+12345678910\" action=\"/action.html\" method=\"POST\" statusCallback=\"/callback\">sms message</Sms>\n</Response>",
+		},
+		{
+			name: "dial",
+			in:   twiml.NewTwiML().Dial(),
+			expected: "<Response>\n	<Dial></Dial>\n</Response>",
+		},
+		{
+			name: "dial number",
+			in:   twiml.NewTwiML().Dial(twiml.DialNumber("+12345678910")),
+			expected: "<Response>\n	<Dial>\n\t\t<Number>+12345678910</Number>\n\t</Dial>\n</Response>",
+		},
+		{
+			name: "dial action",
+			in:   twiml.NewTwiML().Dial(twiml.DialAction("/action")),
+			expected: "<Response>\n	<Dial action=\"/action\"></Dial>\n</Response>",
+		},
+		{
+			name: "dial method POST",
+			in:   twiml.NewTwiML().Dial(twiml.DialMethod(twiml.POST)),
+			expected: "<Response>\n	<Dial method=\"POST\"></Dial>\n</Response>",
+		},
+		{
+			name: "dial method GET",
+			in:   twiml.NewTwiML().Dial(twiml.DialMethod(twiml.GET)),
+			expected: "<Response>\n	<Dial method=\"GET\"></Dial>\n</Response>",
+		},
+		{
+			name: "dial caller id",
+			in:   twiml.NewTwiML().Dial(twiml.DialCallerID("+123445678910")),
+			expected: "<Response>\n	<Dial callerId=\"+123445678910\"></Dial>\n</Response>",
+		},
+		{
+			name: "dial all options",
+			in: twiml.NewTwiML().Dial(twiml.DialCallerID("+123445678910"),
+				twiml.DialMethod(twiml.POST),
+				twiml.DialAction("/action"),
+				twiml.DialNumber("+12345678910")),
+			expected: "<Response>\n	<Dial action=\"/action\" method=\"POST\" callerId=\"+123445678910\">\n\t\t<Number>+12345678910</Number>\n\t</Dial>\n</Response>",
+		},
+		{
+			name: "reject",
+			in:   twiml.NewTwiML().Reject(),
+			expected: "<Response>\n	<Reject></Reject>\n</Response>",
+		},
+		{
+			name: "reject reason busy",
+			in:   twiml.NewTwiML().Reject(twiml.RejectReason(twiml.Busy)),
+			expected: "<Response>\n	<Reject reason=\"busy\"></Reject>\n</Response>",
+		},
+		{
+			name: "reject reason rejected",
+			in:   twiml.NewTwiML().Reject(twiml.RejectReason(twiml.Rejected)),
+			expected: "<Response>\n	<Reject reason=\"rejected\"></Reject>\n</Response>",
 		},
 	}
 
