@@ -72,25 +72,25 @@ After using the `AvailablePhoneNumbers` method, a number can be chosen and purch
 
 Note: This will not work with a Twilio trial account.
 #### Incoming Phone Number Options
-`AreaCode`
-`APIVersion`
-`FriendlyName`
-`VoiceURL`
-`VoiceMethod`
-`VoiceFallBackURL`
-`VoiceFallBackMethod`
-`StatusCallback`
-`StatusCallbackMethod`
-`VoiceCallerIDLookup`
-`VoiceApplicationSID`
-`TrunkSID`
-`SMSURL`
-`SMSMethod`
-`SMSFallbackURL`
-`SMSFallbackMethod`
-`SMSApplicationSID`
-`AccountSID`
-`AddressSID`
+- `AreaCode`
+- `APIVersion`
+- `FriendlyName`
+- `VoiceURL`
+- `VoiceMethod`
+- `VoiceFallBackURL`
+- `VoiceFallBackMethod`
+- `StatusCallback`
+- `StatusCallbackMethod`
+- `VoiceCallerIDLookup`
+- `VoiceApplicationSID`
+- `TrunkSID`
+- `SMSURL`
+- `SMSMethod`
+- `SMSFallbackURL`
+- `SMSFallbackMethod`
+- `SMSApplicationSID`
+- `AccountSID`
+- `AddressSID`
 #### Purchase a number example
 ```
 func PurchaseNumber(number string) (*vtwilio.IncomingPhoneNumber, error) {
