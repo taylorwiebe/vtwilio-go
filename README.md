@@ -67,16 +67,76 @@ func GetAvailableNumbers() {
 	fmt.Println(numbers)
 }
 ```
-### Incoming Phone Numbers
-docs coming soon.
+### Incoming Phone Number
+After using the `AvailablePhoneNumbers` method, a number can be chosen and purchased from Twilio using the `IncomingPhoneNumber` method.
+
+Note: This will not work with a Twilio trial account.
+#### Incoming Phone Number Options
+`AreaCode`
+`APIVersion`
+`FriendlyName`
+`VoiceURL`
+`VoiceMethod`
+`VoiceFallBackURL`
+`VoiceFallBackMethod`
+`StatusCallback`
+`StatusCallbackMethod`
+`VoiceCallerIDLookup`
+`VoiceApplicationSID`
+`TrunkSID`
+`SMSURL`
+`SMSMethod`
+`SMSFallbackURL`
+`SMSFallbackMethod`
+`SMSApplicationSID`
+`AccountSID`
+`AddressSID`
+#### Purchase a number example
+```
+func PurchaseNumber(number string) (*vtwilio.IncomingPhoneNumber, error) {
+	t := vtwilio.NewVTwilio(sid, token)
+	num, err := t.IncomingPhoneNumber(number)
+	if err != nil {
+		return nil, err
+	}
+	return num, nil
+}
+```
+#### Update an existing number
+Updating a number uses the same options as purchasing one.
+```
+func UpdateNumber() error {
+	t := vtwilio.NewVTwilio(sid, token)
+	_, err := t.UpdateIncomingPhoneNumber("+12345678910", "MESSAGE_SID",
+		vtwilio.FriendlyName("New Friendly Name"))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+```
+#### Release a number
+This will delete a Twilio number from your account, and allow someone else to potentially buy this number.
+```
+func ReleaseNumber() error {
+	t := vtwilio.NewVTwilio(sid, token)
+	err := t.ReleaseNumber("NUMBER_SID")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+```
 
 ### TwiML
-docs coming soon.
+[TwiML Docs](./twiml/README.md)
 
 ## Change Log
 ### v0.0.3
 - TwiML support
 - Incoming phone numbers
+- Update phone number settings
+- Release a phone number
 ### v0.0.2
 - Refactoring code
 - Add lookup for available phone numbers
