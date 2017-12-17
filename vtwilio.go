@@ -10,6 +10,8 @@ type Interface interface {
 	IncomingPhoneNumber(number string, opts ...IncomingPhoneNumberOption) (*IncomingPhoneNumber, error)
 	UpdateIncomingPhoneNumber(number, sid string, opts ...IncomingPhoneNumberOption) (*IncomingPhoneNumber, error)
 	ReleaseNumber(sid string) error
+	GetAccountSID() string
+	GetAccountAuthToken() string
 }
 
 const (
@@ -139,4 +141,14 @@ func setDefaults(v *VTwilio) {
 func (v *VTwilio) SetPhoneNumber(n string) *VTwilio {
 	v.twilioNumber = n
 	return v
+}
+
+// GetAccountSID returns the account sid
+func (v *VTwilio) GetAccountSID() string {
+	return v.accountSID
+}
+
+// GetAccountAuthToken returns the account auth token
+func (v *VTwilio) GetAccountAuthToken() string {
+	return v.authToken
 }

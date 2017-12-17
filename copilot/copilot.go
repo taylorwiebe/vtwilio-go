@@ -2,9 +2,13 @@ package copilot
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/twiebe-va/vtwilio-go"
+	"github.com/twiebe-va/vtwilio-go/internal"
 )
 
 // Links response
@@ -32,23 +36,39 @@ type Service struct {
 	URL               string         `json:"url"`
 }
 
+const (
+	servicesURL = "https://messaging.twilio.com/v1/Services"
+)
+
 // Copilot implementation
 type Copilot struct {
-	twilio vtwilio.VTwilio
+	baseAPI string
+	twilio  vtwilio.VTwilio
 }
 
 // NewCopilot returns a copilot instance
 func NewCopilot(t vtwilio.VTwilio) *Copilot {
-	return &Copilot{twilio: t}
+	return &Copilot{twilio: t, baseAPI: servicesURL}
 }
 
 // NewService creates a new Copilot service
 func (c *Copilot) NewService(friendlyName, callbackURL string) (*Service, error) {
-	return nil, nil
+	values := url.Values{}
+	values.Set("FriendlyName", friendlyName)
+	values.Set("StatusCallback", callbackURL)
+
+	en := values.Encode()
+	urlStr := fmt.Sprintf("%v.json", c.baseAPI)
+	req, err := http.NewRequest("POST", urlStr, strings.NewReader(en))
+	if err != nil {
+		return nil, err
+	}
+	internal.SetUpRequest(req, c.twilio.GetAccountSID(), c.twilio.GetAccountAuthToken())
+	return handleNewService(req)
 }
 
 func handleNewService(req *http.Request) (*Service, error) {
-	bodyBytes, err := handleRequest(req)
+	bodyBytes, err := internal.HandleRequest(req)
 	if err != nil {
 		return nil, err
 	}
