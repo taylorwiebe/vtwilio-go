@@ -1,6 +1,6 @@
 # VTwilio - Go
 #####  Note: breaking changes may happen in releases before v1.0.0
-### Version 0.0.3
+### Version 0.4.0
 Call the twilio rest api in go.
 
 ## Examples
@@ -132,17 +132,21 @@ func ReleaseNumber() error {
 [TwiML Docs](./twiml/README.md)
 
 ## Change Log
-### v0.0.3
+### v0.4.0
+- Refactor handlers
+- Add Copilot support
+
+### v0.3.0
 - TwiML support
 - Incoming phone numbers
 - Update phone number settings
 - Release a phone number
-### v0.0.2
+### v0.2.0
 - Refactoring code
 - Add lookup for available phone numbers
 #### Breaking Changes
 - No longer required to pass a number to VTwilio in the case that you want to look up a number.
 This is now an option
 
-### v0.0.1
+### v0.1.0
 - Currently still a work in progress
