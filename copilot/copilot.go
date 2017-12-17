@@ -43,11 +43,11 @@ const (
 // Copilot implementation
 type Copilot struct {
 	baseAPI string
-	twilio  vtwilio.VTwilio
+	twilio  vtwilio.Interface
 }
 
 // NewCopilot returns a copilot instance
-func NewCopilot(t vtwilio.VTwilio) *Copilot {
+func NewCopilot(t vtwilio.Interface) *Copilot {
 	return &Copilot{twilio: t, baseAPI: servicesURL}
 }
 
