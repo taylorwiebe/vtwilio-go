@@ -1,11 +1,14 @@
 package vtwilio
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 	"reflect"
 	"strings"
+
+	"github.com/twiebe-va/vtwilio-go/internal"
 )
 
 // IncomingPhoneNumber purchase an incoming phone number
@@ -36,7 +39,7 @@ func (v *VTwilio) incomingPhoneNumber(number, sid string, opts ...IncomingPhoneN
 	if err != nil {
 		return nil, err
 	}
-	setUpRequest(req, v.accountSID, v.authToken)
+	internal.SetUpRequest(req, v.accountSID, v.authToken)
 	return handleIncomingPhoneNumbers(req)
 }
 
@@ -60,8 +63,8 @@ func (v *VTwilio) ReleaseNumber(sid string) error {
 	if err != nil {
 		return err
 	}
-	setUpRequest(req, v.accountSID, v.authToken)
-	return genericHandler(req)
+	internal.SetUpRequest(req, v.accountSID, v.authToken)
+	return internal.GenericHandler(req)
 }
 
 func validateNumber(n string) error {
@@ -92,4 +95,19 @@ func buildPostValues(c *incomingNumberConfiguration) string {
 		values.Set(v.Type().Field(i).Tag.Get(tag), val)
 	}
 	return values.Encode()
+}
+
+func handleIncomingPhoneNumbers(req *http.Request) (*IncomingPhoneNumber, error) {
+	bodyBytes, err := internal.HandleRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var data IncomingPhoneNumber
+	err = json.Unmarshal(bodyBytes, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	return &data, nil
 }

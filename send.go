@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/twiebe-va/vtwilio-go/internal"
 )
 
 // SendMessage Sends a twilio message and returns the twilio message SID
@@ -40,6 +42,6 @@ func (v *VTwilio) sendMessage(message, to string, config *sendConfiguration) (*M
 	if err != nil {
 		return nil, err
 	}
-	setUpRequest(req, v.accountSID, v.authToken)
+	internal.SetUpRequest(req, v.accountSID, v.authToken)
 	return handleMessage(req)
 }

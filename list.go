@@ -1,10 +1,13 @@
 package vtwilio
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"reflect"
 	"strings"
+
+	"github.com/twiebe-va/vtwilio-go/internal"
 )
 
 // ListMessages returns a list if the messages you have sent
@@ -35,7 +38,7 @@ func (v *VTwilio) listMessages(config *listOptionConfiguration) (*List, error) {
 	if err != nil {
 		return nil, err
 	}
-	setUpRequest(req, v.accountSID, v.authToken)
+	internal.SetUpRequest(req, v.accountSID, v.authToken)
 	return handleListMessages(req)
 }
 
@@ -50,4 +53,19 @@ func buildListValues(c *listOptionConfiguration) string {
 		values = append(values, fmt.Sprintf("%s=%s", v.Type().Field(i).Name, val))
 	}
 	return strings.Join(values, "&")
+}
+
+func handleListMessages(req *http.Request) (*List, error) {
+	bodyBytes, err := internal.HandleRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var data List
+	err = json.Unmarshal(bodyBytes, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	return &data, nil
 }

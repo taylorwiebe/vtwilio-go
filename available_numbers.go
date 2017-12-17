@@ -1,10 +1,13 @@
 package vtwilio
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"reflect"
 	"strings"
+
+	"github.com/twiebe-va/vtwilio-go/internal"
 )
 
 // AvailablePhoneNumbers finds an available phone number
@@ -21,7 +24,7 @@ func (v *VTwilio) AvailablePhoneNumbers(countryCode string, opts ...AvailableOpt
 	if err != nil {
 		return nil, err
 	}
-	setUpRequest(req, v.accountSID, v.authToken)
+	internal.SetUpRequest(req, v.accountSID, v.authToken)
 	return handleAvailability(req)
 }
 
@@ -36,4 +39,19 @@ func buildValues(c *availableConfiguration) string {
 		values = append(values, fmt.Sprintf("%s=%s", v.Type().Field(i).Name, val))
 	}
 	return strings.Join(values, "&")
+}
+
+func handleAvailability(req *http.Request) (*AvailablePhoneNumbers, error) {
+	bodyBytes, err := internal.HandleRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var data AvailablePhoneNumbers
+	err = json.Unmarshal(bodyBytes, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	return &data, nil
 }
