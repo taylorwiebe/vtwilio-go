@@ -28,8 +28,14 @@ func (v *VTwilio) SendMessage(message string, to string, opts ...SendOption) (*M
 func (v *VTwilio) sendMessage(message, to string, config *sendConfiguration) (*Message, error) {
 	values := url.Values{}
 	values.Set("To", to)
-	values.Set("From", v.twilioNumber)
 	values.Set("Body", message)
+	if config.ServiceSID != "" {
+		values.Set("MessagingServiceSid", config.ServiceSID)
+	} else if v.twilioNumber != "" && config.ServiceSID == "" {
+		values.Set("From", v.twilioNumber)
+	} else {
+		return nil, fmt.Errorf("a from phone number is required")
+	}
 	if config.MediaURL != "" {
 		values.Set("MediaUrl", config.MediaURL)
 	}

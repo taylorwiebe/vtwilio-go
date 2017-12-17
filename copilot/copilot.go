@@ -2,7 +2,6 @@ package copilot
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -42,13 +41,21 @@ const (
 
 // Copilot implementation
 type Copilot struct {
-	baseAPI string
-	twilio  vtwilio.Interface
+	baseAPI    string
+	twilio     vtwilio.Interface
+	serviceSID string
 }
 
 // NewCopilot returns a copilot instance
-func NewCopilot(t vtwilio.Interface) *Copilot {
+func NewCopilot(accountSID, authToken string) *Copilot {
+	t := vtwilio.NewVTwilio(accountSID, authToken)
 	return &Copilot{twilio: t, baseAPI: servicesURL}
+}
+
+// ServiceSID adds a service sid to copilot
+func (c *Copilot) ServiceSID(sid string) *Copilot {
+	c.serviceSID = sid
+	return c
 }
 
 // NewService creates a new Copilot service
@@ -58,8 +65,7 @@ func (c *Copilot) NewService(friendlyName, callbackURL string) (*Service, error)
 	values.Set("StatusCallback", callbackURL)
 
 	en := values.Encode()
-	urlStr := fmt.Sprintf("%v.json", c.baseAPI)
-	req, err := http.NewRequest("POST", urlStr, strings.NewReader(en))
+	req, err := http.NewRequest("POST", c.baseAPI, strings.NewReader(en))
 	if err != nil {
 		return nil, err
 	}
