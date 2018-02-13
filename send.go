@@ -38,7 +38,7 @@ func (v *VTwilio) sendMessage(message, to string, config *sendConfiguration) (*M
 	}
 
 	if config.CallbackURL != "" && config.CallbackMethod != "" {
-		values.Set("statusCallback", config.CallbackURL)
+		values.Set("StatusCallback", config.CallbackURL)
 		values.Set("StatusCallbackMethod", config.CallbackMethod.String())
 	}
 

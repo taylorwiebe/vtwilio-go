@@ -132,6 +132,8 @@ func ReleaseNumber() error {
 [TwiML Docs](./twiml/README.md)
 
 ## Change Log
+### v0.1.1
+- Fix typo
 ### v0.1.0
 - Add from number option for send method to override the client's default
 - Add callback url option to send method
