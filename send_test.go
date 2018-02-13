@@ -29,12 +29,36 @@ func TestSendRequest(t *testing.T) {
 			expectedBody: "Body=Text+message&From=%2B12345678910&To=%2B09876543210",
 		},
 		{
+			name:         "override from",
+			opts:         []SendOption{FromNumber("+10987654321")},
+			message:      "Text message",
+			to:           "+09876543210",
+			expectedPath: "/sid/Messages.json",
+			expectedBody: "Body=Text+message&From=%2B10987654321&To=%2B09876543210",
+		},
+		{
 			name:         "media url",
 			opts:         []SendOption{MediaURL("http://url.com")},
 			message:      "Text message",
 			to:           "+09876543210",
 			expectedPath: "/sid/Messages.json",
 			expectedBody: "Body=Text+message&From=%2B12345678910&MediaUrl=http%3A%2F%2Furl.com&To=%2B09876543210",
+		},
+		{
+			name:         "callback url",
+			opts:         []SendOption{Callback("http://url.com/callback", POST)},
+			message:      "Text message",
+			to:           "+09876543210",
+			expectedPath: "/sid/Messages.json",
+			expectedBody: "Body=Text+message&From=%2B12345678910&StatusCallbackMethod=POST&To=%2B09876543210&statusCallback=http%3A%2F%2Furl.com%2Fcallback",
+		},
+		{
+			name:         "meda url and callback url",
+			opts:         []SendOption{MediaURL("http://url.com"), Callback("http://url.com/callback", POST)},
+			message:      "Text message",
+			to:           "+09876543210",
+			expectedPath: "/sid/Messages.json",
+			expectedBody: "Body=Text+message&From=%2B12345678910&MediaUrl=http%3A%2F%2Furl.com&StatusCallbackMethod=POST&To=%2B09876543210&statusCallback=http%3A%2F%2Furl.com%2Fcallback",
 		},
 	}
 	for _, tt := range tests {

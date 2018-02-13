@@ -24,18 +24,26 @@ func (v *VTwilio) SendMessage(message string, to string, opts ...SendOption) (*M
 }
 
 func (v *VTwilio) sendMessage(message, to string, config *sendConfiguration) (*Message, error) {
+	from := v.twilioNumber
+	if config.From != "" {
+		from = config.From
+	}
+
 	values := url.Values{}
 	values.Set("To", to)
-	values.Set("From", v.twilioNumber)
+	values.Set("From", from)
 	values.Set("Body", message)
 	if config.MediaURL != "" {
 		values.Set("MediaUrl", config.MediaURL)
 	}
 
-	en := values.Encode()
+	if config.CallbackURL != "" && config.CallbackMethod != "" {
+		values.Set("statusCallback", config.CallbackURL)
+		values.Set("StatusCallbackMethod", config.CallbackMethod.String())
+	}
 
+	en := values.Encode()
 	urlStr := fmt.Sprintf("%s%s%s.json", v.baseAPI, v.accountSID, messageAPI)
-	fmt.Println(urlStr)
 	req, err := http.NewRequest("POST", urlStr, strings.NewReader(en))
 	if err != nil {
 		return nil, err
