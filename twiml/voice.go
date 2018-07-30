@@ -59,6 +59,7 @@ type Dial struct {
 	Action   string   `xml:"action,attr,omitempty"`
 	Method   Method   `xml:"method,attr,omitempty"`
 	CallerID string   `xml:"callerId,attr,omitempty"`
+	Record   string   `xml:"record,attr,omitempty"`
 	Number   string   `xml:",omitempty"`
 }
 
@@ -136,6 +137,13 @@ func DialCallerID(c string) DialOption {
 func DialNumber(n string) DialOption {
 	return func(d *Dial) {
 		d.Number = n
+	}
+}
+
+// DialRecord what record option to use
+func DialRecord(r string) DialOption {
+	return func(d *Dial) {
+		d.Record = r
 	}
 }
 
