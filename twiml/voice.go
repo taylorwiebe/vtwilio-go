@@ -55,12 +55,19 @@ type Reject struct {
 
 // Dial is the TwiML dial structure
 type Dial struct {
-	XMLName  xml.Name `xml:"Dial"`
-	Action   string   `xml:"action,attr,omitempty"`
-	Method   Method   `xml:"method,attr,omitempty"`
-	CallerID string   `xml:"callerId,attr,omitempty"`
-	Record   string   `xml:"record,attr,omitempty"`
-	Number   string   `xml:",omitempty"`
+	XMLName                 xml.Name `xml:"Dial"`
+	Action                  string   `xml:"action,attr,omitempty"`
+	Method                  Method   `xml:"method,attr,omitempty"`
+	CallerID                string   `xml:"callerId,attr,omitempty"`
+	Record                  string   `xml:"record,attr,omitempty"`
+	RecordingStatusCallback string   `xml:"recordingStatusCallback,attr,omitempty"`
+	Number                  string   `xml:",omitempty"`
+}
+
+// Pause is the TwiML pause structure
+type Pause struct {
+	XMLName xml.Name `xml:"Pause"`
+	Length  uint32   `xml:"length,attr,omitempty"`
 }
 
 // SayOption option for what a phone call will say
@@ -85,6 +92,13 @@ func SayLoop(l int) SayOption {
 	return func(s *Say) {
 		s.Loop = l
 	}
+}
+
+// Pause adds a pause
+func (t *TwiML) Pause(l uint32) *TwiML {
+	p := &Pause{Length: l}
+	t.PauseOpt = p
+	return t
 }
 
 // Say adds a message that will be said to the user
@@ -144,6 +158,13 @@ func DialNumber(n string) DialOption {
 func DialRecord(r string) DialOption {
 	return func(d *Dial) {
 		d.Record = r
+	}
+}
+
+// DialRecordingStatusCallback specify a recordingStatusCallback URL to hit on recording completion
+func DialRecordingStatusCallback(u string) DialOption {
+	return func(d *Dial) {
+		d.RecordingStatusCallback = u
 	}
 }
 

@@ -100,6 +100,11 @@ func TestBuild(t *testing.T) {
 			expected: "<Response>\n	<Dial></Dial>\n</Response>",
 		},
 		{
+			name: "pause",
+			in:   twiml.NewTwiML().Pause(10),
+			expected: "<Response>\n	<Pause length=\"10\"></Pause>\n</Response>",
+		},
+		{
 			name: "dial number",
 			in:   twiml.NewTwiML().Dial(twiml.DialNumber("+12345678910")),
 			expected: "<Response>\n	<Dial>\n\t\t<Number>+12345678910</Number>\n\t</Dial>\n</Response>",
@@ -108,6 +113,16 @@ func TestBuild(t *testing.T) {
 			name: "dial action",
 			in:   twiml.NewTwiML().Dial(twiml.DialAction("/action")),
 			expected: "<Response>\n	<Dial action=\"/action\"></Dial>\n</Response>",
+		},
+		{
+			name: "dial record",
+			in:   twiml.NewTwiML().Dial(twiml.DialRecord("record-action")),
+			expected: "<Response>\n	<Dial record=\"record-action\"></Dial>\n</Response>",
+		},
+		{
+			name: "dial recordingStatusCallback",
+			in:   twiml.NewTwiML().Dial(twiml.DialRecordingStatusCallback("callback")),
+			expected: "<Response>\n	<Dial recordingStatusCallback=\"callback\"></Dial>\n</Response>",
 		},
 		{
 			name: "dial method POST",
@@ -129,8 +144,11 @@ func TestBuild(t *testing.T) {
 			in: twiml.NewTwiML().Dial(twiml.DialCallerID("+123445678910"),
 				twiml.DialMethod(twiml.POST),
 				twiml.DialAction("/action"),
-				twiml.DialNumber("+12345678910")),
-			expected: "<Response>\n	<Dial action=\"/action\" method=\"POST\" callerId=\"+123445678910\">\n\t\t<Number>+12345678910</Number>\n\t</Dial>\n</Response>",
+				twiml.DialNumber("+12345678910"),
+				twiml.DialRecord("record"),
+				twiml.DialRecordingStatusCallback("callback"),
+			),
+			expected: "<Response>\n	<Dial action=\"/action\" method=\"POST\" callerId=\"+123445678910\" record=\"record\" recordingStatusCallback=\"callback\">\n\t\t<Number>+12345678910</Number>\n\t</Dial>\n</Response>",
 		},
 		{
 			name: "reject",

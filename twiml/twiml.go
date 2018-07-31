@@ -18,6 +18,7 @@ type TwiML struct {
 	DialOpt     *Dial    `xml:"Dial,omitempty"`
 	RejectOpt   *Reject  `xml:"Reject,omitempty"`
 	SMSOpt      *SMS     `xml:"Sms,omitempty"`
+	PauseOpt    *Pause   `xml:"Pause,omitempty"`
 }
 
 // Method for http
